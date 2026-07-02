@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../core/api_client.dart';
 import '../core/app_theme.dart';
 import '../models/supplier.dart';
@@ -198,8 +199,13 @@ class _SupplierDialogState extends State<_SupplierDialog> {
               const SizedBox(height: 12),
               TextFormField(
                 controller: _contact,
+                keyboardType: TextInputType.phone,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 decoration:
                     const InputDecoration(labelText: 'Contact number'),
+                validator: (v) => (v != null && v.isNotEmpty && v.length != 10)
+                    ? 'Contact number must be exactly 10 digits'
+                    : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
