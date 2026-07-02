@@ -88,7 +88,7 @@ class _HomeShellState extends State<HomeShell> {
                 onPressed: () => Scaffold.of(ctx).openDrawer(),
               ),
             ),
-          Flexible(
+          Expanded(
             child: Text(
               'Mini Inventory Management System',
               overflow: TextOverflow.ellipsis,
@@ -100,7 +100,6 @@ class _HomeShellState extends State<HomeShell> {
               ),
             ),
           ),
-          const Spacer(),
           // Notification bell
           Stack(
             children: [
