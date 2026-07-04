@@ -135,7 +135,7 @@ class _StockBalanceScreenState extends State<StockBalanceScreen> {
         margin: const pw.EdgeInsets.all(24),
         build: (ctx) => [
           pw.Text(title,
-              style: pw.TextStyle(
+              style: const pw.TextStyle(
                   fontSize: 18, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 4),
           pw.Text('Generated: $now   •   Total records: ${data.length}',
@@ -144,7 +144,7 @@ class _StockBalanceScreenState extends State<StockBalanceScreen> {
           pw.TableHelper.fromTextArray(
             headers: headers,
             data: rows,
-            headerStyle: pw.TextStyle(
+            headerStyle: const pw.TextStyle(
                 fontWeight: pw.FontWeight.bold, fontSize: 9),
             cellStyle: const pw.TextStyle(fontSize: 9),
             headerDecoration:
@@ -283,7 +283,7 @@ class _StockBalanceScreenState extends State<StockBalanceScreen> {
             LayoutBuilder(builder: (context, c) {
               final wide = c.maxWidth > 680;
               final catDrop = DropdownButtonFormField<String?>(
-                value: _filterCategory,
+                initialValue: _filterCategory,
                 isExpanded: true,
                 decoration: const InputDecoration(labelText: 'Category'),
                 items: [
@@ -297,7 +297,7 @@ class _StockBalanceScreenState extends State<StockBalanceScreen> {
                 }),
               );
               final supDrop = DropdownButtonFormField<int?>(
-                value: _filterSupplierId,
+                initialValue: _filterSupplierId,
                 isExpanded: true,
                 decoration: const InputDecoration(labelText: 'Supplier'),
                 items: [

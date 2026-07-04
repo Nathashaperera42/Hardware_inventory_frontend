@@ -67,7 +67,7 @@ class _HomeShellState extends State<HomeShell> {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        border: Border(
+        border: const Border(
             bottom: BorderSide(color: AppColors.border)),
         boxShadow: [
           BoxShadow(
@@ -88,11 +88,11 @@ class _HomeShellState extends State<HomeShell> {
                 onPressed: () => Scaffold.of(ctx).openDrawer(),
               ),
             ),
-          Flexible(
+          const Flexible(
             child: Text(
               'Mini Inventory Management System',
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
@@ -127,21 +127,21 @@ class _HomeShellState extends State<HomeShell> {
             offset: const Offset(0, 50),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12)),
-            child: Row(
+            child: const Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
                 CircleAvatar(
                   radius: 17,
                   backgroundColor: AppColors.primary,
-                  child: const Text('A',
+                  child: Text('A',
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 14,
                           fontWeight: FontWeight.bold)),
                 ),
-                const SizedBox(width: 8),
-                const Column(
+                SizedBox(width: 8),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -156,8 +156,8 @@ class _HomeShellState extends State<HomeShell> {
                             color: AppColors.textMuted)),
                   ],
                 ),
-                const SizedBox(width: 4),
-                const Icon(Icons.keyboard_arrow_down_rounded,
+                SizedBox(width: 4),
+                Icon(Icons.keyboard_arrow_down_rounded,
                     size: 18, color: AppColors.textMuted),
               ],
             ),
