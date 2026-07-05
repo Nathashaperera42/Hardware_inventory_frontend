@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'auth_session.dart';
 import 'constants.dart';
 
 /// Thin wrapper over http that unwraps the backend's ApiResponse envelope
@@ -20,7 +21,7 @@ class ApiClient {
       );
 
   Future<dynamic> get(String path, {Map<String, dynamic>? query}) async {
-    final res = await _client.get(_uri(path, query));
+    final res = await _client.get(_uri(path, query), headers: _headers);
     return _handle(res);
   }
 
@@ -41,9 +42,20 @@ class ApiClient {
     return _handle(res);
   }
 
-  static const _headers = {'Content-Type': 'application/json'};
+  Map<String, String> get _headers {
+    final token = AuthSession.instance.token;
+    return {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+  }
 
   dynamic _handle(http.Response res) {
+    if (res.statusCode == 401) {
+      AuthSession.instance.logout();
+      throw ApiException('Session expired. Please log in again.');
+    }
+
     Map<String, dynamic> body;
     try {
       body = jsonDecode(res.body) as Map<String, dynamic>;

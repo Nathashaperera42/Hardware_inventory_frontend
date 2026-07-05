@@ -9,10 +9,17 @@ import '../services/inventory_api.dart';
 import '../widgets/stat_card.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  /// Called with the sidebar tab index to jump to when a "View All" link is tapped.
+  final ValueChanged<int>? onNavigate;
+  const DashboardScreen({super.key, this.onNavigate});
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
+
+// Sidebar tab indices (must match Sidebar's navItems order in home_shell.dart).
+const _tabStockIn = 4;
+const _tabStockOut = 5;
+const _tabLowStock = 7;
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final _api = InventoryApi();
@@ -79,9 +86,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             _RecentRow(
                 recentIn: d.recentIn,
                 recentOut: d.recentOut,
-                dateFmt: _dateFmt),
+                dateFmt: _dateFmt,
+                onViewAllIn: () => widget.onNavigate?.call(_tabStockIn),
+                onViewAllOut: () => widget.onNavigate?.call(_tabStockOut)),
             const SizedBox(height: 20),
-            _LowStockCard(items: d.lowStock),
+            _LowStockCard(
+                items: d.lowStock,
+                onViewAll: () => widget.onNavigate?.call(_tabLowStock)),
             const SizedBox(height: 8),
           ],
         );
@@ -180,10 +191,14 @@ class _RecentRow extends StatelessWidget {
   final List<StockInRecord>  recentIn;
   final List<StockOutRecord> recentOut;
   final DateFormat dateFmt;
+  final VoidCallback? onViewAllIn;
+  final VoidCallback? onViewAllOut;
   const _RecentRow({
     required this.recentIn,
     required this.recentOut,
     required this.dateFmt,
+    this.onViewAllIn,
+    this.onViewAllOut,
   });
 
   @override
@@ -193,16 +208,16 @@ class _RecentRow extends StatelessWidget {
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: _RecentInCard(records: recentIn, dateFmt: dateFmt)),
+            Expanded(child: _RecentInCard(records: recentIn, dateFmt: dateFmt, onViewAll: onViewAllIn)),
             const SizedBox(width: 16),
-            Expanded(child: _RecentOutCard(records: recentOut, dateFmt: dateFmt)),
+            Expanded(child: _RecentOutCard(records: recentOut, dateFmt: dateFmt, onViewAll: onViewAllOut)),
           ],
         );
       }
       return Column(children: [
-        _RecentInCard(records: recentIn, dateFmt: dateFmt),
+        _RecentInCard(records: recentIn, dateFmt: dateFmt, onViewAll: onViewAllIn),
         const SizedBox(height: 16),
-        _RecentOutCard(records: recentOut, dateFmt: dateFmt),
+        _RecentOutCard(records: recentOut, dateFmt: dateFmt, onViewAll: onViewAllOut),
       ]);
     });
   }
@@ -211,7 +226,8 @@ class _RecentRow extends StatelessWidget {
 class _RecentInCard extends StatelessWidget {
   final List<StockInRecord> records;
   final DateFormat dateFmt;
-  const _RecentInCard({required this.records, required this.dateFmt});
+  final VoidCallback? onViewAll;
+  const _RecentInCard({required this.records, required this.dateFmt, this.onViewAll});
 
   @override
   Widget build(BuildContext context) {
@@ -219,6 +235,7 @@ class _RecentInCard extends StatelessWidget {
       title: 'Recent Stock In',
       accentColor: AppColors.good,
       emptyMessage: 'No recent stock-in records.',
+      onViewAll: onViewAll,
       rows: records.map((r) => _RecentRow2(
         item: r.itemName ?? '-',
         qty: '+${r.quantity}',
@@ -232,7 +249,8 @@ class _RecentInCard extends StatelessWidget {
 class _RecentOutCard extends StatelessWidget {
   final List<StockOutRecord> records;
   final DateFormat dateFmt;
-  const _RecentOutCard({required this.records, required this.dateFmt});
+  final VoidCallback? onViewAll;
+  const _RecentOutCard({required this.records, required this.dateFmt, this.onViewAll});
 
   @override
   Widget build(BuildContext context) {
@@ -240,6 +258,7 @@ class _RecentOutCard extends StatelessWidget {
       title: 'Recent Stock Out',
       accentColor: AppColors.out,
       emptyMessage: 'No recent stock-out records.',
+      onViewAll: onViewAll,
       rows: records.map((r) => _RecentRow2(
         item: r.itemName ?? '-',
         qty: '-${r.quantity}',
@@ -255,11 +274,13 @@ class _RecentCard extends StatelessWidget {
   final Color accentColor;
   final String emptyMessage;
   final List<_RecentRow2> rows;
+  final VoidCallback? onViewAll;
   const _RecentCard({
     required this.title,
     required this.accentColor,
     required this.emptyMessage,
     required this.rows,
+    this.onViewAll,
   });
 
   @override
@@ -290,19 +311,15 @@ class _RecentCard extends StatelessWidget {
                       color: AppColors.textPrimary)),
             ),
             const SizedBox(width: 8),
-            const Text('View All',
-                style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w600)),
+            _ViewAllLink(onTap: onViewAll),
           ]),
         ),
         const Divider(height: 1, color: AppColors.border),
 
         // Column headers
-        const Padding(
-          padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
-          child: Row(children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+          child: Row(children: const [
             Expanded(child: Text('Item',
                 style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
                     color: AppColors.textMuted))),
@@ -328,7 +345,7 @@ class _RecentCard extends StatelessWidget {
             ),
           )
         else
-          ...rows.map((r) => _buildRow(r)),
+          ...rows.map((r) => _buildRow(r)).toList(),
 
         const SizedBox(height: 6),
       ]),
@@ -380,6 +397,27 @@ class _RecentCard extends StatelessWidget {
   }
 }
 
+class _ViewAllLink extends StatelessWidget {
+  final VoidCallback? onTap;
+  const _ViewAllLink({this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(6),
+      onTap: onTap,
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        child: Text('View All',
+            style: TextStyle(
+                fontSize: 12,
+                color: AppColors.primary,
+                fontWeight: FontWeight.w600)),
+      ),
+    );
+  }
+}
+
 class _RecentRow2 {
   final String item, qty, date;
   final Color qtyColor;
@@ -394,7 +432,8 @@ class _RecentRow2 {
 // ── Low Stock Alerts ──────────────────────────────────────────────────────────
 class _LowStockCard extends StatelessWidget {
   final List<StockBalance> items;
-  const _LowStockCard({required this.items});
+  final VoidCallback? onViewAll;
+  const _LowStockCard({required this.items, this.onViewAll});
 
   @override
   Widget build(BuildContext context) {
@@ -421,19 +460,15 @@ class _LowStockCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary)),
             const Spacer(),
-            const Text('View All',
-                style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w600)),
+            _ViewAllLink(onTap: onViewAll),
           ]),
         ),
         const Divider(height: 1, color: AppColors.border),
 
         // Table header
-        const Padding(
-          padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
-          child: Row(children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+          child: Row(children: const [
             Expanded(flex: 3, child: Text('Item',
                 style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
                     color: AppColors.textMuted))),
@@ -519,7 +554,7 @@ class _LowStockCard extends StatelessWidget {
               if (b != items.take(6).last)
                 const Divider(height: 1, color: AppColors.border),
             ]);
-          }),
+          }).toList(),
 
         const SizedBox(height: 6),
       ]),

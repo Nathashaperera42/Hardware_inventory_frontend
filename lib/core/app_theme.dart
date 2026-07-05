@@ -127,19 +127,19 @@ class AppTheme {
       ),
 
       // DataTable
-      dataTableTheme: const DataTableThemeData(
-        headingTextStyle: TextStyle(
+      dataTableTheme: DataTableThemeData(
+        headingTextStyle: const TextStyle(
           fontWeight: FontWeight.w700,
           fontSize: 12,
           color: AppColors.textMuted,
           letterSpacing: 0.4,
         ),
-        dataTextStyle: TextStyle(
+        dataTextStyle: const TextStyle(
           fontSize: 14,
           color: AppColors.textPrimary,
         ),
         dividerThickness: 1,
-        decoration: BoxDecoration(color: Colors.transparent),
+        decoration: const BoxDecoration(color: Colors.transparent),
       ),
     );
   }

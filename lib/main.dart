@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'core/app_theme.dart';
-import 'screens/home_shell.dart';
+import 'screens/auth_gate.dart';
 
 void main() => runApp(const MiniInventoryApp());
 
@@ -13,7 +13,7 @@ class MiniInventoryApp extends StatelessWidget {
       title: 'Hardware Inventory System',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
-      home: const HomeShell(),
+      home: const AuthGate(),
     );
   }
 }

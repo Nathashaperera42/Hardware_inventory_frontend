@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../core/app_theme.dart';
+import '../core/auth_session.dart';
+import '../services/auth_api.dart';
 import '../widgets/sidebar.dart';
 import 'dashboard_screen.dart';
 import 'categories_screen.dart';
@@ -8,7 +10,6 @@ import 'items_screen.dart';
 import 'stock_in_screen.dart';
 import 'stock_out_screen.dart';
 import 'stock_balance_screen.dart';
-import 'users_screen.dart';
 import 'settings_screen.dart';
 
 class HomeShell extends StatefulWidget {
@@ -21,7 +22,7 @@ class _HomeShellState extends State<HomeShell> {
   int _index = 0;
   // Incrementing this per-screen forces a full widget rebuild (new key →
   // dispose old state + initState on new state → fresh API load).
-  final List<int> _refreshKeys = List.filled(10, 0);
+  final List<int> _refreshKeys = List.filled(9, 0);
 
   void _navigate(int newIndex) {
     setState(() {
@@ -33,7 +34,8 @@ class _HomeShellState extends State<HomeShell> {
   Widget _body() {
     switch (_index) {
       case 0:
-        return DashboardScreen(key: ValueKey(_refreshKeys[0]));
+        return DashboardScreen(
+            key: ValueKey(_refreshKeys[0]), onNavigate: _navigate);
       case 1:
         return CategoriesScreen(key: ValueKey(_refreshKeys[1]));
       case 2:
@@ -50,9 +52,7 @@ class _HomeShellState extends State<HomeShell> {
         return StockBalanceScreen(
             key: ValueKey(_refreshKeys[7]), lowStockOnly: true);
       case 8:
-        return UsersScreen(key: ValueKey(_refreshKeys[8]));
-      case 9:
-        return SettingsScreen(key: ValueKey(_refreshKeys[9]));
+        return SettingsScreen(key: ValueKey(_refreshKeys[8]));
       default:
         return DashboardScreen(key: ValueKey(_refreshKeys[0]));
     }
@@ -67,7 +67,7 @@ class _HomeShellState extends State<HomeShell> {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        border: const Border(
+        border: Border(
             bottom: BorderSide(color: AppColors.border)),
         boxShadow: [
           BoxShadow(
@@ -88,11 +88,11 @@ class _HomeShellState extends State<HomeShell> {
                 onPressed: () => Scaffold.of(ctx).openDrawer(),
               ),
             ),
-          Flexible(
+          Expanded(
             child: Text(
               'Mini Inventory Management System',
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
@@ -126,44 +126,54 @@ class _HomeShellState extends State<HomeShell> {
             offset: const Offset(0, 50),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12)),
-            child: const Row(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
                 CircleAvatar(
                   radius: 17,
                   backgroundColor: AppColors.primary,
-                  child: Text('A',
-                      style: TextStyle(
+                  child: Text(
+                      (AuthSession.instance.username ?? 'A')
+                          .substring(0, 1)
+                          .toUpperCase(),
+                      style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,
                           fontWeight: FontWeight.bold)),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Admin',
-                        style: TextStyle(
+                    Text(AuthSession.instance.username ?? 'Admin',
+                        style: const TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 13,
                             color: AppColors.textPrimary)),
-                    Text('Administrator',
+                    const Text('Administrator',
                         style: TextStyle(
                             fontSize: 11,
                             color: AppColors.textMuted)),
                   ],
                 ),
-                SizedBox(width: 4),
-                Icon(Icons.keyboard_arrow_down_rounded,
+                const SizedBox(width: 4),
+                const Icon(Icons.keyboard_arrow_down_rounded,
                     size: 18, color: AppColors.textMuted),
               ],
             ),
             itemBuilder: (_) => const [
-              PopupMenuItem(value: 'profile', child: Text('My Profile')),
               PopupMenuItem(value: 'logout', child: Text('Logout')),
             ],
+            onSelected: (value) async {
+              if (value == 'logout') {
+                try {
+                  await AuthApi().logout();
+                } catch (_) {}
+                AuthSession.instance.logout();
+              }
+            },
           ),
         ],
       ),

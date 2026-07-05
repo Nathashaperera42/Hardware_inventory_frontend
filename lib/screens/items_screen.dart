@@ -185,7 +185,7 @@ class _ItemsScreenState extends State<ItemsScreen> {
               onChanged: (_) => setState(() => _page = 0),
             );
             final catDrop = DropdownButtonFormField<int?>(
-              initialValue: _filterCategoryId,
+              value: _filterCategoryId,
               decoration: const InputDecoration(labelText: 'Category'),
               isExpanded: true,
               items: [
@@ -199,7 +199,7 @@ class _ItemsScreenState extends State<ItemsScreen> {
               }),
             );
             final supDrop = DropdownButtonFormField<int?>(
-              initialValue: _filterSupplierId,
+              value: _filterSupplierId,
               decoration: const InputDecoration(labelText: 'Supplier'),
               isExpanded: true,
               items: [
@@ -620,7 +620,7 @@ class _ItemFormPageState extends State<_ItemFormPage> {
                     _Field(
                       label: 'Category *',
                       child: DropdownButtonFormField<int>(
-                        initialValue: _categoryId,
+                        value: _categoryId,
                         hint: const Text('Select Category'),
                         decoration: const InputDecoration(),
                         items: widget.categories
@@ -634,7 +634,7 @@ class _ItemFormPageState extends State<_ItemFormPage> {
                     _Field(
                       label: 'Status *',
                       child: DropdownButtonFormField<String>(
-                        initialValue: _status,
+                        value: _status,
                         decoration: const InputDecoration(),
                         items: const [
                           DropdownMenuItem(
@@ -653,7 +653,7 @@ class _ItemFormPageState extends State<_ItemFormPage> {
                     _Field(
                       label: 'Supplier *',
                       child: DropdownButtonFormField<int>(
-                        initialValue: _supplierId,
+                        value: _supplierId,
                         hint: const Text('Select Supplier'),
                         decoration: const InputDecoration(),
                         items: widget.suppliers

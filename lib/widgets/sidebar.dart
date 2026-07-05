@@ -16,7 +16,6 @@ const navItems = <NavItem>[
   NavItem(Icons.logout_rounded,          'Stock Out'),
   NavItem(Icons.bar_chart_rounded,       'Reports'),
   NavItem(Icons.warning_amber_rounded,   'Low Stock'),
-  NavItem(Icons.people_rounded,          'Users'),
   NavItem(Icons.settings_rounded,        'Settings'),
 ];
 

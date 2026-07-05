@@ -257,7 +257,7 @@ class _EntryFormCard extends StatelessWidget {
                   LayoutBuilder(builder: (context, c) {
                     final wide = c.maxWidth > 600;
                     final itemDrop = DropdownButtonFormField<int>(
-                      initialValue: itemId,
+                      value: itemId,
                       isExpanded: true,
                       hint: const Text('Select Item *'),
                       decoration: const InputDecoration(),
@@ -270,7 +270,7 @@ class _EntryFormCard extends StatelessWidget {
                       validator: (v) => v == null ? 'Required' : null,
                     );
                     final supDrop = DropdownButtonFormField<int>(
-                      initialValue: supplierId,
+                      value: supplierId,
                       isExpanded: true,
                       hint: const Text('Select Supplier *'),
                       decoration: const InputDecoration(),
