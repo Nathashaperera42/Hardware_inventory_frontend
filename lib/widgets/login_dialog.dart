@@ -57,7 +57,7 @@ class _LoginDialogState extends State<LoginDialog> {
     return PopScope(
       canPop: false,
       child: Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         child: Padding(
           padding: const EdgeInsets.all(28),
           child: Form(

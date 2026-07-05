@@ -51,7 +51,10 @@ class ApiClient {
   }
 
   dynamic _handle(http.Response res) {
-    if (res.statusCode == 401) {
+    // A 401 while a token was attached means that token was rejected (expired/invalid)
+    // -> force logout. A 401 with no token attached is a normal login failure and
+    // should surface the server's actual message instead.
+    if (res.statusCode == 401 && AuthSession.instance.token != null) {
       AuthSession.instance.logout();
       throw ApiException('Session expired. Please log in again.');
     }
