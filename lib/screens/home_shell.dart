@@ -67,7 +67,7 @@ class _HomeShellState extends State<HomeShell> {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        border: Border(
+        border: const Border(
             bottom: BorderSide(color: AppColors.border)),
         boxShadow: [
           BoxShadow(
@@ -88,11 +88,11 @@ class _HomeShellState extends State<HomeShell> {
                 onPressed: () => Scaffold.of(ctx).openDrawer(),
               ),
             ),
-          Expanded(
+          const Expanded(
             child: Text(
               'Mini Inventory Management System',
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,

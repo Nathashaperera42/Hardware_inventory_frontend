@@ -317,9 +317,9 @@ class _RecentCard extends StatelessWidget {
         const Divider(height: 1, color: AppColors.border),
 
         // Column headers
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-          child: Row(children: const [
+        const Padding(
+          padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
+          child: Row(children: [
             Expanded(child: Text('Item',
                 style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
                     color: AppColors.textMuted))),
@@ -345,7 +345,7 @@ class _RecentCard extends StatelessWidget {
             ),
           )
         else
-          ...rows.map((r) => _buildRow(r)).toList(),
+          ...rows.map((r) => _buildRow(r)),
 
         const SizedBox(height: 6),
       ]),
@@ -466,9 +466,9 @@ class _LowStockCard extends StatelessWidget {
         const Divider(height: 1, color: AppColors.border),
 
         // Table header
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-          child: Row(children: const [
+        const Padding(
+          padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
+          child: Row(children: [
             Expanded(flex: 3, child: Text('Item',
                 style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
                     color: AppColors.textMuted))),
@@ -554,7 +554,7 @@ class _LowStockCard extends StatelessWidget {
               if (b != items.take(6).last)
                 const Divider(height: 1, color: AppColors.border),
             ]);
-          }).toList(),
+          }),
 
         const SizedBox(height: 6),
       ]),
